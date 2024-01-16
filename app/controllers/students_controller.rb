@@ -49,9 +49,5 @@ class StudentsController < ApplicationController
         render json: { error: "Failed to delete student" },status: :unprocessable_entity 
     end
 
-
-    # private
-    # def student_params
-    #   params.require(:student).permit(:user_id, :stud_name,:address, :age)
   end
 end

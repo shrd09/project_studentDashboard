@@ -1,10 +1,3 @@
-# class ApplicationController < ActionController::Base
-#     protect_from_forgery with: :null_session
-
-#     include Authentication
-# end
-
-
 #For JWT
 class ApplicationController < ActionController::Base
     before_action :authorize_request
@@ -31,6 +24,7 @@ class ApplicationController < ActionController::Base
     def authenticate_token(token)
         begin
           decoded = JWT.decode(token, Rails.application.secret_key_base, true, algorithm: 'HS256')
+          puts "Decoded token: #{decoded}"
           @current_user = User.find(decoded.first['user_id'])
         rescue JWT::ExpiredSignature
           render json: { error: 'Token has expired' }, status: :unauthorized

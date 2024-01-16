@@ -1,17 +1,21 @@
 
 #For JWT
 class SessionsController < ApplicationController
-  skip_before_action :authorize_request, only: [:create] # Bypass auth filter for login
+  skip_before_action :authorize_request, only: [:create, :destroy] # Bypass auth filter for login
   
   before_action :set_cors_headers
 
   def create
     user = User.find_by(email: params[:user][:email])
 
-    if user && user.authenticate(params[:user][:password]) && user.role.to_s == params[:user][:role]
+    puts "**********************************"
+    puts "User Data: #{user.as_json(only: [:id, :email, :role])}"
+    # byebug
+    if user && user.authenticate(params[:user][:password]) 
+      # && user.role.to_s == params[:user][:role].to_s
+      puts "User Data: #{user.as_json(only: [:id, :email, :role])}"
       # byebug
       jwt_token = generate_token(user.id)
-      # jwt_token = encode_token(user.id)
       render json: { user: user.as_json(only: [:id, :email, :role]), token: jwt_token, message: 'Logged in successfully' }, status: :ok
     else
       render json: { error: 'Invalid email or password' }, status: :unauthorized
@@ -19,6 +23,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
+    # reset_session
     render json: { message: 'Logged out successfully' }, status: :ok
   end
 
@@ -26,8 +31,16 @@ class SessionsController < ApplicationController
   private
 
   def generate_token(user_id)
-    payload = {user_id: user_id}
-    JWT.encode(payload,Rails.application.secret_key_base,'HS256')
+    puts "Generating token for user_id: #{user_id}"
+    user = User.find_by(id: user_id)
+    return nil unless user
+    payload = { user_id: user_id, email: user.email }
+    begin
+      JWT.encode(payload,Rails.application.secret_key_base,'HS256')
+    rescue JWT::EncodeError => e
+      puts "Error encoding JWT: #{e.message}"
+      nil
+    end
   end
 
   def encode_token(user_id)

@@ -5,6 +5,8 @@ class CoursesController < ApplicationController
         user_id = params[:id]
         courses = Course.where(user_id: user_id)
       
+        puts "#{courses.inspect}"
+
         if courses.any?
           render json: courses, status: :ok
         else
