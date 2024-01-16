@@ -30,12 +30,17 @@ class StudentsController < ApplicationController
 
 
     def create
-      student = Student.create!(user_id:params["user_id"],student_name:params["student_name"],address:params["address"],age:params["age"])
-
-      if student
-        render json: student, status: :created
-      else
-        render json: { error: "Failed to create student" }, status: :unprocessable_entity
+      existing_student = Student.find_by(user_id: params["user_id"])
+      if existing_student
+        render json: { error: "Student with user_id: #{params['user_id']} already exists" }, status: :unprocessable_entity
+      else    
+        student = Student.create!(user_id:params["user_id"],student_name:params["student_name"],address:params["address"],age:params["age"])
+          
+        if student
+          render json: student, status: :created
+        else
+          render json: { error: "Failed to create student" }, status: :unprocessable_entity
+        end
       end
     end
   

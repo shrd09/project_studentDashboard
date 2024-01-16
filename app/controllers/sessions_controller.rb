@@ -10,9 +10,8 @@ class SessionsController < ApplicationController
 
     puts "**********************************"
     puts "User Data: #{user.as_json(only: [:id, :email, :role])}"
-    # byebug
+
     if user && user.authenticate(params[:user][:password]) 
-      # && user.role.to_s == params[:user][:role].to_s
       puts "User Data: #{user.as_json(only: [:id, :email, :role])}"
       # byebug
       jwt_token = generate_token(user.id)
@@ -34,7 +33,9 @@ class SessionsController < ApplicationController
     puts "Generating token for user_id: #{user_id}"
     user = User.find_by(id: user_id)
     return nil unless user
-    payload = { user_id: user_id, email: user.email }
+
+    expiration_time = 2.minutes.from_now.to_i# Set the expiration time
+    payload = { user_id: user_id, email: user.email, exp: expiration_time }
     begin
       JWT.encode(payload,Rails.application.secret_key_base,'HS256')
     rescue JWT::EncodeError => e

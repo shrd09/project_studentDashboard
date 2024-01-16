@@ -23,11 +23,15 @@ class TeachersController < ApplicationController
 
     def create
       teacher = Teacher.create!(user_id:params["user_id"],teacher_name:params["teacher_name"],phone_no:params["phone_no"])
-
-      if teacher
-        render json: teacher, status: :created
-      else
-        render json: { error: "Failed to create teacher" }, status: :unprocessable_entity
+      existing_teacher = Teacher.find_by(user_id: params["user_id"])
+      if existing_teacher
+        render json: { error: "Teacher with user_id: #{params['user_id']} already exists" }, status: :unprocessable_entity
+      else  
+        if teacher
+          render json: teacher, status: :created
+        else
+          render json: { error: "Failed to create teacher" }, status: :unprocessable_entity
+        end
       end
     end
 

@@ -25,11 +25,16 @@ class ApplicationController < ActionController::Base
         begin
           decoded = JWT.decode(token, Rails.application.secret_key_base, true, algorithm: 'HS256')
           puts "Decoded token: #{decoded}"
-          @current_user = User.find(decoded.first['user_id'])
-        rescue JWT::ExpiredSignature
-          render json: { error: 'Token has expired' }, status: :unauthorized
-        rescue JWT::DecodeError
-          render json: { error: 'Invalid token' }, status: :unauthorized
+
+          if decoded[0]['exp'].present? && Time.now.to_i > decoded[0]['exp']
+            render json: { error: 'Token has expired' }, status: :unauthorized
+          else
+            @current_user = User.find(decoded.first['user_id'])
+          end
+          rescue JWT::ExpiredSignature
+            render json: { error: 'Token has expired' }, status: :unauthorized
+          rescue JWT::DecodeError
+            render json: { error: 'Invalid token' }, status: :unauthorized
         end
     end
 end

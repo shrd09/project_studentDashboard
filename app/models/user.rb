@@ -3,7 +3,7 @@ class User < ApplicationRecord
     has_secure_password
     has_one :student, dependent: :destroy
     has_one :teacher, dependent: :destroy
-
+    has_one :admin, dependent: :destroy
     validates :email, presence: true, uniqueness: true
     validates :password, presence: true
     validates :role, presence: true

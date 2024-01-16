@@ -19,6 +19,17 @@ class UsersController < ApplicationController
     end
   end
 
+  def delete_user
+    email = params[:email]
+    email = email+".com"
+    puts "email of user: #{email}"
+    user = User.find_by(email: email)
+    # byebug
+    user.destroy if user
+    head :no_content
+  end
+
+
   def show
     email = params[:email]
     user = User.find_by(email: email)
@@ -26,15 +37,4 @@ class UsersController < ApplicationController
     render json: user
   end
 
-  def destroy
-    user = User.find(params[:id])
-    user.destroy
-    head :no_content
-  end
-
-  private
-
-  def authorize_user
-    authorize User
-  end
 end

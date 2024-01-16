@@ -24,4 +24,17 @@ class CoursesController < ApplicationController
         render json: { error: 'No courses available' }, status: :not_found
         end
     end
+
+    def create
+      course_name = params[:course_name]
+      user_id = params[:user_id]
+
+      course = Course.create!(course_name: course_name,user_id: user_id)
+
+      if course
+        render json: course, status: :created
+      else
+        render json: { error: "Failed to create course" }, status: :unprocessable_entity
+      end 
+    end
 end
