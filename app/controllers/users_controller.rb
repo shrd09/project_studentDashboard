@@ -1,5 +1,4 @@
 class UsersController < ApplicationController
-  # before_action :authorize_user
   before_action :authorize_request
   # , except: [:create]
   def index
@@ -39,6 +38,7 @@ class UsersController < ApplicationController
 
   def update
     email = params[:email]
+    email = email+".com"
     user = User.find_by(email: email)
     puts "users data::***#{user}"
     # byebug
