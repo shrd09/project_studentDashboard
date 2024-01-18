@@ -14,6 +14,18 @@ class CoursesController < ApplicationController
         end
     end
 
+    # def show_marks
+    #   courseId = params[:courseId]
+    #   user_id = @current_user.id
+
+    #   enrollment = Enrollment.find_by(user_id: user_id, course_id: courseId)
+
+    #   if enrollment
+    #     render json: {course_name: enrollment.course.course_name,marks: Array(enrollment.marks)}
+    #   else
+    #     render json: {error: 'Marks not found for the selected course'}, status: :not_found
+    #   end
+    # end
 
     def index
         courses = Course.includes(:teacher).all

@@ -37,4 +37,24 @@ class UsersController < ApplicationController
     render json: user
   end
 
+  def update
+    email = params[:email]
+    user = User.find_by(email: email)
+    puts "users data::***#{user}"
+    # byebug
+    if user
+      update_payload = {
+        password: params[:password],
+        role: params[:role]
+      }
+
+      if user.update(update_payload)
+        render json: {message: "User updated successfuly"}, status: :ok
+      else
+        render json: {error: "Failed to update user"}, status: :unprocessable_entity
+      end
+    else
+      render json: {error: "User not found"}, status: :not_found
+    end
+  end
 end

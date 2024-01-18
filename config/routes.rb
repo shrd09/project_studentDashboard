@@ -34,6 +34,8 @@ Rails.application.routes.draw do
   get 'teachers/:id/enrollments', to: 'enrollments#index'
   get '/users/:id/enrolled_courses', to: 'enrollments#show'
 
+  get 'courses/:courseId/marks', to: 'courses#show_marks'
+
   get 'users/:id/enrollments', to: 'enrollments#show'
   get '/courses/:course_ids/enrollments', to: 'enrollments#index_by_courses'
 
@@ -50,6 +52,6 @@ Rails.application.routes.draw do
 
   get '/teachers', to: 'teachers#index'
 
-
+  put '/users/:email', to: 'users#update'
   root 'homepage#index'
 end
